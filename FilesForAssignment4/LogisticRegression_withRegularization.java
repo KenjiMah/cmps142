@@ -113,10 +113,11 @@ public class LogisticRegression_withRegularization {
                 for (int i=0; i < instances.size(); i++) {
                     // TODO: Train the model
                 	double [] x = instances.get(i).x;
-                	double predicted = probPred1(x);
+                	double predicted = predict(x);
                 	int label = instances.get(i).label;
+                	double norm = weightsL2Norm();
                 	for(int j = 0; j < weights.length; j++) {
-                		weights[j] = weights[j] + rate *((label - predicted) - rate * x[j] * lambda);
+                		weights[j] = weights[j] + rate/(1+rate*norm) *(label - predicted)* x[j];
                 	}
                     // TODO: Compute the log-likelihood of the data here. Remember to take logs when necessary
                 	lik = lik + label * Math.log(probPred1(x)) + (1-label) * Math.log(1- probPred1(x));

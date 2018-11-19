@@ -19,20 +19,38 @@ public class LogisticRegression_withBias {
 
         /** TODO: Constructor initializes the weight vector. Initialize it by setting it to the 0 vector. **/
         public LogisticRegression_withBias(int n) { // n is the number of weights to be learned
+        	this.rate = rate;
+        	weights = new double[n+1];
+        	for(int i = 0; i < n; i++) {
+        		weights[i] = 0;
+        	}
+        	weights[n] = 1;
         }
 
         /** TODO: Implement the function that returns the L2 norm of the weight vector **/
         private double weightsL2Norm(){
+        	double total = 0;
+        	for(int i = 0; i < weights.length; i++) {
+        		total = total + Math.pow(weights[i],2);
+        	}
+        	return Math.sqrt(total);
         }
 
         /** TODO: Implement the sigmoid function **/
         private static double sigmoid(double z) {
+        	return 1 / (1 + Math.exp(-z));
         }
 
         /** TODO: Helper function for prediction **/
         /** Takes a test instance as input and outputs the probability of the label being 1 **/
         /** This function should call sigmoid() **/
         private double probPred1(double[] x) {
+        	double total = 0;
+        	for(int i = 0; i < weights.length-1; i++) {
+        		total = total + weights[i] * x[i];
+        	}
+        	total ++;
+        	return sigmoid(total);
         }
 
         /** TODO: The prediction function **/
@@ -89,11 +107,18 @@ public class LogisticRegression_withBias {
         /** Also compute the log-likelihood of the data in this function **/
         public void train(List<LRInstance> instances) {
             for (int n = 0; n < ITERATIONS; n++) {
-                double lik = 0.0; // Stores log-likelihood of the training data for this iteration
+            	double lik = 0.0; // Stores log-likelihood of the training data for this iteration
                 for (int i=0; i < instances.size(); i++) {
                     // TODO: Train the model
-
+                	double [] x = instances.get(i).x;
+                	double predicted = predict(x);
+                	int label = instances.get(i).label;
+                	for(int j = 0; j < weights.length-1; j++) {
+                		weights[j] = weights[j] + rate *(label - predicted) * x[j];
+                	}
+                	weights[weights.length-1] = weights[weights.length-1] + rate;
                     // TODO: Compute the log-likelihood of the data here. Remember to take logs when necessary
+                	lik = lik + label * Math.log(probPred1(x)) + (1-label) * Math.log(1- probPred1(x));
                 }
                 System.out.println("iteration: " + n + " lik: " + lik);
             }
@@ -105,6 +130,8 @@ public class LogisticRegression_withBias {
 
             /** TODO: Constructor for initializing the Instance object **/
             public LRInstance(int label, double[] x) {
+            	this.label = label;
+            	this.x = x;
             }
         }
 
