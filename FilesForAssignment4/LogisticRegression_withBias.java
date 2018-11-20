@@ -21,7 +21,7 @@ public class LogisticRegression_withBias {
         public LogisticRegression_withBias(int n) { // n is the number of weights to be learned
         	this.rate = rate;
         	weights = new double[n+1];
-        	for(int i = 0; i < n; i++) {
+        	for(int i = 0; i < n+1; i++) {
         		weights[i] = 0;
         	}
         	weights[n] = 1;
@@ -111,12 +111,13 @@ public class LogisticRegression_withBias {
                 for (int i=0; i < instances.size(); i++) {
                     // TODO: Train the model
                 	double [] x = instances.get(i).x;
-                	double predicted = predict(x);
+                	double predicted = probPred1(x);
                 	int label = instances.get(i).label;
                 	for(int j = 0; j < weights.length-1; j++) {
-                		weights[j] = weights[j] + rate *(label - predicted) * x[j];
+                		weights[j] = weights[j] + rate *(label - predicted) * x[j] ;
                 	}
-                	weights[weights.length-1] = weights[weights.length-1] + rate;
+                	weights[weights.length-1] += rate * (label - predicted);
+                	
                     // TODO: Compute the log-likelihood of the data here. Remember to take logs when necessary
                 	lik = lik + label * Math.log(probPred1(x)) + (1-label) * Math.log(1- probPred1(x));
                 }

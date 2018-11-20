@@ -109,7 +109,7 @@ public class LogisticRegression {
                 for (int i=0; i < instances.size(); i++) {
                     // TODO: Train the model
                 	double [] x = instances.get(i).x;
-                	double predicted = predict(x);
+                	double predicted = probPred1(x);
                 	int label = instances.get(i).label;
                 	for(int j = 0; j < weights.length; j++) {
                 		weights[j] = weights[j] + rate *(label - predicted) * x[j];
